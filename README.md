@@ -167,19 +167,19 @@ La aplicación tiene dos ambientes configurados: **dev** y **prod**. Cada uno ti
 
 La configuración está en `android/app/build.gradle`:
 
-```groovy
-flavorDimensions "environment"
+```Kotlin DSL
+flavorDimensions += "environment"
 
 productFlavors {
-    dev {
-        dimension "environment"
-        applicationIdSuffix ".dev"
-        versionNameSuffix "-dev"
-        resValue "string", "app_name", "Weather Dev"
+    create ("dev") {
+        dimension = "environment"
+        applicationIdSuffix = ".dev"
+        versionNameSuffix = "-dev"
+        resValue("string", "app_name", "Weather Dev")
     }
-    prod {
-        dimension "environment"
-        resValue "string", "app_name", "Weather"
+    create ("prod") {
+        dimension = "environment"
+        resValue("string", "app_name", "Weather")
     }
 }
 ```

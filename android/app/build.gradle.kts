@@ -30,18 +30,18 @@ android {
         versionName = flutter.versionName
     }
 
-    flavorDimensions "environment"
+    flavorDimensions += "environment"
 
     productFlavors {
-        dev {
-            dimension "environment"
-            applicationIdSuffix ".dev"
-            versionNameSuffix "-dev"
-            resValue "string", "app_name", "Weather"
+        create ("dev") {
+            dimension = "environment"
+            applicationIdSuffix = ".dev"
+            versionNameSuffix = "-dev"
+            resValue("string", "app_name", "Weather Dev")
         }
-        prod {
-            dimension "environment"
-            resValue "string", "app_name", "Weather"
+        create ("prod") {
+            dimension = "environment"
+            resValue("string", "app_name", "Weather")
         }
     }
 

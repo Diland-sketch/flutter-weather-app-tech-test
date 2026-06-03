@@ -1,5 +1,3 @@
-// lib/core/config/flavor_config.dart
-
 enum Flavor { dev, prod }
 
 class FlavorConfig {
