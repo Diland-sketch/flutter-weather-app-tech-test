@@ -16,6 +16,7 @@ class ApiClient {
         baseUrl: FlavorConfig.instance.baseUrl,
         connectTimeout: const Duration(seconds: 10),
         receiveTimeout: const Duration(seconds: 10),
+        listFormat: ListFormat.csv,
         headers: {
           'Accept': 'application/json',
         },
