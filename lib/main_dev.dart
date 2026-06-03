@@ -7,13 +7,7 @@ import 'package:weather_app/core/storage/local_db.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  try {
-    await RealmDb.init();
-    print('✅ Realm inicializado correctamente');
-  } catch (e, stack) {
-    print('❌ Error inicializando Realm: $e');
-    print(stack);
-  }
+  await RealmDb.init();
 
   FlavorConfig.instance = const FlavorConfig(
     flavor: Flavor.dev,
