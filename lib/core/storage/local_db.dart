@@ -1,4 +1,6 @@
 import 'package:realm/realm.dart';
+import 'package:weather_app/core/storage/realm_models/event_cache.dart';
+import 'package:weather_app/core/storage/realm_models/weather_cache.dart';
 
 class RealmDb {
   static Realm? _realm;
@@ -13,7 +15,8 @@ class RealmDb {
   static Future<void> init() async {
     final config = Configuration.local(
       [
-        /* modelos aquí */
+        WeatherCache.schema,
+        EventCache.schema,
       ],
       schemaVersion: 1,
       migrationCallback: (migration, oldVersion){
