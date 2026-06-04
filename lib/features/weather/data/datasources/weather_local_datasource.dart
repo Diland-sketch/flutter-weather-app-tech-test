@@ -7,12 +7,12 @@ import 'package:weather_app/features/weather/data/dtos/current_conditions_dto.da
 import 'package:weather_app/features/weather/data/dtos/day_weather_dto.dart';
 import 'package:weather_app/features/weather/data/dtos/weather_response_dto.dart';
 
-abstract interface class IWeatherRepository {
+abstract interface class IWeatherLocalDataSource {
   Future<void> saveWeather(String location, WeatherResponseDto dto);
   WeatherResponseDto getCachedWeather(String location);
 }
 
-class WeatherLocalDataSourceImpl implements IWeatherRepository {
+class WeatherLocalDataSourceImpl implements IWeatherLocalDataSource {
   @override
   WeatherResponseDto getCachedWeather(String location) {
     final realm = RealmDb.instance;
