@@ -29,8 +29,8 @@ class ApiClient {
     ]);
     return ApiClient(dio);
   }
-
-  final apiClienteProvider = Provider<ApiClient>((ref){
-    return ApiClient.create();
-  });
 }
+
+final apiClientProvider = Provider<ApiClient>((ref){
+  return ApiClient.create();
+});
