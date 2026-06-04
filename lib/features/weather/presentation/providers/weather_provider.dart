@@ -1,6 +1,3 @@
-// lib/features/weather/presentation/providers/weather_provider.dart
-
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:weather_app/core/network/api_client.dart';
 import 'package:weather_app/core/network/connectivity_service.dart';

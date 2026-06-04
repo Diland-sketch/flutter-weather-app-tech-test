@@ -12,15 +12,21 @@ class WeatherRemoteDataSourceImpl implements IWeatherRemoteDataSource {
   const WeatherRemoteDataSourceImpl(this._apiClient);
 
   @override
-  Future<WeatherResponseDto> getWeather(String location) async {
+  Future<WeatherResponseDto> getWeather(
+    String location, {
+    String period = ApiConstants.last5Days,
+    }) async {
     try {
+      final path = period.isEmpty
+          ? '${ApiConstants.baseUrl}/$location'
+          : '${ApiConstants.baseUrl}/$location/$period';
+
       final response = await _apiClient.dio.get(
-        '${ApiConstants.baseUrl}/$location',
+        path,
         queryParameters: {
           'include': ApiConstants.includeWeather,
-        },
+        }
       );
-
       return WeatherResponseDto.fromJson(
         response.data as Map<String, dynamic>,
       );

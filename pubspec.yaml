@@ -1,10 +1,10 @@
 name: weather_app
 description: Weather app - Prueba técnica Flutter
-publish_to: 'none'
+publish_to: "none"
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
   flutter:
@@ -22,23 +22,27 @@ dependencies:
   connectivity_plus: ^6.0.3
 
   # --- Persistencia local ---
-  realm: ^20.0.0          # base de datos principal (requerido en prueba)
+  realm: ^20.0.0 # base de datos principal (requerido en prueba)
 
   # --- Ubicación ---
   geolocator: ^11.0.0
-  geocoding: ^3.0.0       # convierte coordenadas ↔ nombre de ciudad
+  geocoding: ^3.0.0 # convierte coordenadas ↔ nombre de ciudad
 
   # --- Mapas ---
   flutter_map: ^6.1.0
-  latlong2: ^0.9.0        # tipos de coordenadas para flutter_map
+  latlong2: ^0.9.0 # tipos de coordenadas para flutter_map
 
   # --- Manejo de errores funcional ---
-  fpdart: ^1.1.0          # Either<Failure, T>
+  fpdart: ^1.1.0 # Either<Failure, T>
 
   # --- Utilidades ---
-  intl: ^0.19.0           # formateo de fechas en español
-  uuid: ^4.3.3            # generar IDs únicos para eventos
-  cached_network_image: ^3.3.1  # imágenes con caché automático
+  intl: ^0.19.0 # formateo de fechas en español
+  uuid: ^4.3.3 # generar IDs únicos para eventos
+  cached_network_image: ^3.3.1 # imágenes con caché automático
+
+  # --- UI ---
+  flutter_svg: ^2.0.10 # íconos meteorológicos en SVG
+  gap: ^3.0.1 # espaciado consistente (alternativa a SizedBox)
 
 dev_dependencies:
   flutter_test:
@@ -51,10 +55,10 @@ dev_dependencies:
   # --- Análisis estático ---
   flutter_lints: ^4.0.0
   custom_lint: ^0.6.4
-  riverpod_lint: ^2.3.10      # reglas específicas de Riverpod
+  riverpod_lint: ^2.3.10 # reglas específicas de Riverpod
 
   # --- Testing ---
-  mocktail: ^1.0.3            # mocking para tests unitarios
+  mocktail: ^1.0.3 # mocking para tests unitarios
 
   # --- Íconos por flavor ---
   flutter_launcher_icons: ^0.13.1
