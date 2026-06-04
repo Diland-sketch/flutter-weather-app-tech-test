@@ -21,10 +21,10 @@ class CurrentConditionsDto {
 
   factory CurrentConditionsDto.fromJson(Map<String, dynamic> json) {
     return CurrentConditionsDto(
-      temp: (json['temp'] as num).toDouble(),
-      feelsLike: (json['feelslike'] as num).toDouble(),
-      humidity: (json['humidity'] as num).toDouble(),
-      windSpeed: (json['windspeed'] as num).toDouble(),
+      temp: (json['temp'] as num?)?.toDouble() ?? 0.0,
+      feelsLike: (json['feelslike'] as num?)?.toDouble() ?? 0.0,
+      humidity: (json['humidity'] as num?)?.toDouble() ?? 0.0,
+      windSpeed: (json['windspeed'] as num?)?.toDouble() ?? 0.0,
       conditions: json['conditions'] as String? ?? '',
       icon: json['icon'] as String? ?? '',
       datetime: json['datetime'] as String? ?? '',

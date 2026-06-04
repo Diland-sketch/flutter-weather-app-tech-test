@@ -29,13 +29,13 @@ class DayWeatherDto {
 
   factory DayWeatherDto.fromJson(Map<String, dynamic> json) {
     return DayWeatherDto(
-      datetime: json['datetime'] as String,
-      tempMax: (json['tempmax'] as num).toDouble(),
-      tempMin: (json['tempmin'] as num).toDouble(),
-      temp: (json['temp'] as num).toDouble(),
-      humidity: (json['humidity'] as num).toDouble(),
-      windSpeed: (json['windspeed'] as num).toDouble(),
-      precipProb: (json['precipprob'] as num).toDouble(),
+      datetime: json['datetime'] as String? ?? '',
+      tempMax: (json['tempmax'] as num?)?.toDouble() ?? 0.0,
+      tempMin: (json['tempmin'] as num?)?.toDouble() ?? 0.0,
+      temp: (json['temp'] as num?)?.toDouble() ?? 0.0,
+      humidity: (json['humidity'] as num?)?.toDouble() ?? 0.0,
+      windSpeed: (json['windspeed'] as num?)?.toDouble() ?? 0.0,
+      precipProb: (json['precipprob'] as num?)?.toDouble() ?? 0.0,
       conditions: json['conditions'] as String? ?? '',
       description: json['description'] as String? ?? '',
       icon: json['icon'] as String? ?? '',

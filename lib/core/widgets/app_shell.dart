@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:weather_app/core/widgets/offline_banner.dart';
 
 class AppShell extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
@@ -9,12 +10,19 @@ class AppShell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: navigationShell,
+      // Column en el body para apilar banner + contenido
+      body: Column(
+        children: [
+          // Banner offline — visible en todas las tabs automáticamente
+          const OfflineBanner(),
+          // Contenido de la tab activa
+          Expanded(child: navigationShell),
+        ],
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: navigationShell.currentIndex,
         onTap: (index) => navigationShell.goBranch(
           index,
-          // Si tap en tab activa, vuelve al root de esa tab
           initialLocation: index == navigationShell.currentIndex,
         ),
         items: const [

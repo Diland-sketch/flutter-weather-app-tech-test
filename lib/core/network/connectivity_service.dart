@@ -19,3 +19,8 @@ class ConnectivityService {
 final connectivityServiceProvider = Provider<ConnectivityService>((ref) {
   return ConnectivityService(Connectivity());
 });
+
+
+  final isConnectedProvider = StreamProvider<bool>((ref) {
+    return ref.read(connectivityServiceProvider).connectivityStream;
+  });

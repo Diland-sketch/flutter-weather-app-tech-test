@@ -58,6 +58,7 @@ class WeatherLocalDataSourceImpl implements IWeatherLocalDataSource {
         'tempmin': d.tempMin,
         'temp': d.temp,
         'humidity': d.humidity,
+        'windspeed': d.windSpeed,
         'precipprob': d.precipProb,
         'conditions': d.conditions,
         'description': d.description,
