@@ -22,7 +22,7 @@ final eventsRepositoryProvider =
 );
 
 typedef EventsRepositoryRef = AutoDisposeProviderRef<IEventsRepository>;
-String _$eventsNotifierHash() => r'9394b80adaf8abdf99f2a0ace2c7b9ea214fef04';
+String _$eventsNotifierHash() => r'9eec1330e489492f8186a6026a1c715c79a7ae63';
 
 /// See also [EventsNotifier].
 @ProviderFor(EventsNotifier)

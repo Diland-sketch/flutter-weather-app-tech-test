@@ -34,7 +34,7 @@ class MapScreen extends ConsumerWidget {
     // Centro del mapa: primer evento o posición por defecto (Colombia)
     final initialCenter = allEvents.isNotEmpty
         ? LatLng(allEvents.first.latitude, allEvents.first.longitude)
-        : const LatLng(4.6097, -74.0817); // Bogotá
+        : const LatLng(4.6097, -74.0817); // Bogota
 
     return Scaffold(
       backgroundColor: AppColors.backgroundDark,

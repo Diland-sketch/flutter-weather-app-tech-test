@@ -15,7 +15,7 @@ class WeatherScreen extends ConsumerStatefulWidget {
 
 class _WeatherScreenState extends ConsumerState<WeatherScreen> {
   // Ubicación por defecto al abrir la app
-  String _currentLocation = 'Bogotá, Colombia';
+  String _currentLocation = 'Bogota, Colombia';
 
   @override
   void initState() {
@@ -512,8 +512,8 @@ class _LocationSearchSheetState extends State<_LocationSearchSheet> {
 
   // Ciudades sugeridas rápidas
   static const _suggestions = [
-    'Bogotá, Colombia',
-    'Medellín, Colombia',
+    'Bogota, Colombia',
+    'Medellin, Colombia',
     'Cali, Colombia',
     'Barranquilla, Colombia',
     'Cartagena, Colombia',

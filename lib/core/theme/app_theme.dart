@@ -47,5 +47,18 @@ class AppTheme {
         borderRadius: BorderRadius.circular(16),
       ),
     ),
+    appBarTheme: const AppBarTheme(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      centerTitle: true,
+      foregroundColor: AppColors.textOnDark,
+    ),
+    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+      selectedItemColor: AppColors.accent,
+      unselectedItemColor: AppColors.textOnDarkSecondary,
+      backgroundColor: AppColors.cardDark,
+      type: BottomNavigationBarType.fixed,
+      elevation: 8,
+    )
   );
 }

@@ -20,10 +20,22 @@ IEventsRepository eventsRepository(EventsRepositoryRef ref) {
 
 @riverpod
 class EventsNotifier extends _$EventsNotifier {
+  String? _lastLocation;
   @override
-  FutureOr<List<EventEntity>> build() => [];
+  FutureOr<List<EventEntity>> build() {
+    ref.listen(isConnectedProvider, (previous, next){
+      final wasOffline = previous?.value == false;
+      final isNowOnline = next.value == true;
+
+      if(wasOffline && isNowOnline && _lastLocation != null){
+        loadEvents(_lastLocation!);
+      }
+    });
+    return [];
+  }
 
   Future<void> loadEvents(String location) async {
+    _lastLocation = location;
     state = const AsyncLoading();
 
     final result = await ref

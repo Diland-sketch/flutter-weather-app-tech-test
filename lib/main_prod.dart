@@ -8,13 +8,14 @@ void main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
 
-  await RealmDb.init();
-
   FlavorConfig.instance = const FlavorConfig(
     flavor: Flavor.prod,
     appName: 'Weather',
     baseUrl: 'https://weather.visualcrossing.com',
-    apiKey: 'prod-api-key',
+    apiKey: 'F9CZBQF44MCNHSVGK97RBZDSL',
   );
+
+  await RealmDb.init();
+
   runApp(const ProviderScope(child: App()));
 }

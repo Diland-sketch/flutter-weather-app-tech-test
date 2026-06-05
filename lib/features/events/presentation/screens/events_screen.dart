@@ -15,7 +15,7 @@ class EventsScreen extends ConsumerStatefulWidget {
 }
 
 class _EventsScreenState extends ConsumerState<EventsScreen> {
-  String _currentLocation = 'Bogotá, Colombia';
+  String _currentLocation = 'Bogota, Colombia';
 
   @override
   void initState() {
@@ -403,8 +403,8 @@ class _LocationSearchSheetState extends State<_LocationSearchSheet> {
   final _controller = TextEditingController();
 
   static const _suggestions = [
-    'Bogotá, Colombia',
-    'Medellín, Colombia',
+    'Bogota, Colombia',
+    'Medellin, Colombia',
     'Cali, Colombia',
     'Barranquilla, Colombia',
     'London, UK',
