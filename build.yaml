@@ -1,0 +1,11 @@
+# build.yaml
+targets:
+  $default:
+    builders:
+      realm:realm_generator:
+        generate_for:
+          include:
+            - lib/core/storage/realm_models/**
+          exclude:
+            - lib/app.dart
+            - test/**
