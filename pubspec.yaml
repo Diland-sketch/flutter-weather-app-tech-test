@@ -63,26 +63,6 @@ dev_dependencies:
   # --- Íconos por flavor ---
   flutter_launcher_icons: ^0.13.1
 
-# Configuración de íconos por flavor
-flutter_icons:
-  image_path: "assets/icons/ic_launcher.png"
-  android: true
-  ios: true
-
-flutter_launcher_icons_dev:
-  image_path: "assets/icons/ic_launcher_dev.png"
-  android: true
-  ios: true
-  android_override:
-    flavor: dev
-
-flutter_launcher_icons_prod:
-  image_path: "assets/icons/ic_launcher_prod.png"
-  android: true
-  ios: true
-  android_override:
-    flavor: prod
-
 flutter:
   uses-material-design: true
   assets:
