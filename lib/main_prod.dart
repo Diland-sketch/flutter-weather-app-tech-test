@@ -12,7 +12,7 @@ void main() async {
     flavor: Flavor.prod,
     appName: 'Weather',
     baseUrl: 'https://weather.visualcrossing.com',
-    apiKey: 'F9CZBQF44MCNHSVGK97RBZDSL',
+    apiKey: '5CXGVQTKX2D6ZKAJWTA5D2EXC',
   );
 
   await RealmDb.init();

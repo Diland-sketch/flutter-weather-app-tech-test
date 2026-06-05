@@ -44,7 +44,10 @@ class WeatherRepositoryImpl implements IWeatherRepository {
     } on NetworkException {
       return _getCachedWeather(location);
     } on ServerException catch (e) {
-      return Left(ServerFailure(statusCode: e.statusCode));
+      final message = e.statusCode == 400
+          ? 'Ciudad no encontrada. Verifica el nombre e intenta de nuevo'
+          : e.message;
+      return Left(ServerFailure(statusCode: e.statusCode, message: message));
     } on ParsingException {
       return Left(ParsingFailure());
     }

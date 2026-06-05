@@ -110,12 +110,15 @@ class _EventsList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // Escuchamos favoritos para actualizar el ícono en tiempo real
     final favorites = ref.watch(favoritesNotifierProvider);
-    final favoriteIds = favorites
-        .map((e) => e.id)
-        .toSet();
+    final favoriteIds = favorites.map((e) => e.id).toSet();
 
     return ListView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.only(
+        left: 16,
+        right: 16,
+        top: 16,
+        bottom: 80 + MediaQuery.of(context).padding.bottom,
+      ),
       itemCount: events.length,
       itemBuilder: (context, index) {
         final event = events[index];
@@ -124,7 +127,7 @@ class _EventsList extends ConsumerWidget {
         return _EventCard(
           event: event.copyWith(isFavorite: isFav),
           onTap: () => context.push(
-            '${AppRoutes.events}/${AppRoutes.eventDetail}',
+            AppRoutes.eventDetail,
             extra: event.copyWith(isFavorite: isFav),
           ),
           onFavoriteTap: () => ref
@@ -185,108 +188,160 @@ class _EventCard extends StatelessWidget {
     }
   }
 
+  ({String label, Color color}) _severityBadge(String type) {
+    switch (type.toLowerCase()) {
+      case 'tornado':
+        return (label: 'CRÍTICO', color: const Color(0xFFE53935));
+      case 'earthquake':
+      case 'flood':
+        return (label: 'ALTO', color: const Color(0xFFFF9800));
+      case 'thunder-rain':
+      case 'thunder-showers-day':
+      case 'thunder-showers-night':
+        return (label: 'MEDIO', color: const Color(0xFFFFD600));
+      case 'hail':
+      case 'wind':
+        return (label: 'BAJO', color: const Color(0xFF66BB6A));
+      default:
+        return (label: 'INFO', color: const Color(0xFF42A5F5));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final color = _eventColor(event.type);
+    final badge = _severityBadge(event.type);
 
     return Card(
       color: AppColors.cardDark,
+      elevation: 0,
       margin: const EdgeInsets.only(bottom: 12),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            children: [
-              // Ícono de tipo
-              Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  color: color.withOpacity(0.15),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Center(
-                  child: Text(
-                    _eventEmoji(event.type),
-                    style: const TextStyle(fontSize: 24),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 14),
-              // Información
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+          border: Border(
+            left: BorderSide(color: color, width: 3),
+          ),
+        ),
+        child: Stack(
+          children: [
+            InkWell(
+              onTap: onTap,
+              borderRadius: BorderRadius.circular(16),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
                   children: [
-                    Text(
-                      _translateType(event.type),
-                      style: TextStyle(
-                        color: color,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 0.5,
+                    Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: color.withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Center(
+                        child: Text(
+                          _eventEmoji(event.type),
+                          style: const TextStyle(fontSize: 24),
+                        ),
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      event.description ?? 'Sin descripción',
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: Colors.white70,
-                        fontSize: 13,
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            _translateType(event.type),
+                            style: TextStyle(
+                              color: color,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            event.description ?? 'Sin descripción',
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              color: Colors.white70,
+                              fontSize: 13,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          Row(
+                            children: [
+                              const Icon(Icons.access_time,
+                                  color: Colors.white38, size: 12),
+                              const SizedBox(width: 4),
+                              Text(
+                                _formatDate(event.datetime),
+                                style: const TextStyle(
+                                    color: Colors.white38, fontSize: 11),
+                              ),
+                              const SizedBox(width: 12),
+                              const Icon(Icons.social_distance,
+                                  color: Colors.white38, size: 12),
+                              const SizedBox(width: 4),
+                              Text(
+                                '${event.distance.toStringAsFixed(1)} km',
+                                style: const TextStyle(
+                                    color: Colors.white38, fontSize: 11),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 6),
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.access_time,
-                          color: Colors.white38,
-                          size: 12,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          _formatDate(event.datetime),
-                          style: const TextStyle(
-                            color: Colors.white38,
-                            fontSize: 11,
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        const Icon(
-                          Icons.social_distance,
-                          color: Colors.white38,
-                          size: 12,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          '${event.distance.toStringAsFixed(1)} km',
-                          style: const TextStyle(
-                            color: Colors.white38,
-                            fontSize: 11,
-                          ),
-                        ),
-                      ],
+                    IconButton(
+                      onPressed: onFavoriteTap,
+                      icon: Icon(
+                        event.isFavorite
+                            ? Icons.favorite
+                            : Icons.favorite_border,
+                        color: event.isFavorite
+                            ? const Color(0xFFE53935)
+                            : Colors.white38,
+                      ),
                     ),
                   ],
                 ),
               ),
-              // Botón favorito
-              IconButton(
-                onPressed: onFavoriteTap,
-                icon: Icon(
-                  event.isFavorite ? Icons.favorite : Icons.favorite_border,
-                  color: event.isFavorite
-                      ? const Color(0xFFE53935)
-                      : Colors.white38,
+            ),
+
+            // Badge de severidad — esquina superior derecha
+            Positioned(
+              top: 8,
+              right: 52, // deja espacio al botón de favorito
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                decoration: BoxDecoration(
+                  color: badge.color.withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: badge.color.withOpacity(0.6)),
+                ),
+                child: Text(
+                  badge.label,
+                  style: TextStyle(
+                    color: badge.color,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.8,
+                  ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

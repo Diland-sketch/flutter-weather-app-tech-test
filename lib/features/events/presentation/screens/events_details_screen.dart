@@ -25,6 +25,7 @@ class EventDetailScreen extends ConsumerWidget {
     );
 
     return Scaffold(
+      extendBody: false,
       backgroundColor: AppColors.backgroundDark,
       appBar: AppBar(
         backgroundColor: AppColors.primaryDark,
@@ -65,7 +66,7 @@ class EventDetailScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _DetailCard(event: event!),
-                  const SizedBox(height: 80), // espacio para el FAB
+                  const SizedBox(height: 80),
                 ],
               ),
             ),

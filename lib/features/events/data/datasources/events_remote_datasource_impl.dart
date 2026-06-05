@@ -14,8 +14,10 @@ class EventsRemoteDatasourceImpl implements IEventsRemoteDataSource {
   @override
   Future<EventResponseDto> getEvents(String location) async {
     try {
+      final encondeLocation = Uri.encodeComponent(location);
+
       final response = await _apiClient.dio.get(
-        '${ApiConstants.baseUrl}/$location/${ApiConstants.last30Days}',
+        '${ApiConstants.baseUrl}/$encondeLocation/${ApiConstants.last30Days}',
         queryParameters: {
           'include': ApiConstants.includeEvents,
         },
@@ -37,9 +39,18 @@ class EventsRemoteDatasourceImpl implements IEventsRemoteDataSource {
       case DioExceptionType.receiveTimeout:
       case DioExceptionType.sendTimeout:
       case DioExceptionType.connectionError:
-        throw NetworkException();
+        throw NetworkException(
+          'Sin conexión. Verifica tu internet',
+        );
       case DioExceptionType.badResponse:
-        throw ServerException(statusCode: e.response?.statusCode);
+        final statusCode = e.response?.statusCode;
+        final body = e.response?.data;
+
+        final apiMessage = body is String && body.isNotEmpty
+            ? body
+            : 'Error del servidor ($statusCode)';
+
+        throw ServerException(statusCode: e.response?.statusCode, message: apiMessage);
       default:
         throw NetworkException('Error inesperado: ${e.message}');
     }

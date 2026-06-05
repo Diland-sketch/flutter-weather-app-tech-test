@@ -44,7 +44,10 @@ class LoggerInterceptor extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
     if (kDebugMode) {
-      debugPrint('❌ ERROR: ${err.response?.statusCode} ${err.message}');
+      final statusCode = err.response?.statusCode ?? 'Sin respuesta';
+      final message = err.message ?? err.type.name;
+      final path = err.requestOptions.path;
+      debugPrint('❌ ERROR: $statusCode | $message | $path');
     }
     handler.next(err);
   }

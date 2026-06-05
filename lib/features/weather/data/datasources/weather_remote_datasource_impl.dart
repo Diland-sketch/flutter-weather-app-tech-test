@@ -17,9 +17,11 @@ class WeatherRemoteDataSourceImpl implements IWeatherRemoteDataSource {
     String period = ApiConstants.last5Days,
     }) async {
     try {
+      final encodeLocation = Uri.encodeComponent(location);
+
       final path = period.isEmpty
-          ? '${ApiConstants.baseUrl}/$location'
-          : '${ApiConstants.baseUrl}/$location/$period';
+          ? '${ApiConstants.baseUrl}/$encodeLocation'
+          : '${ApiConstants.baseUrl}/$encodeLocation/$period';
 
       final response = await _apiClient.dio.get(
         path,

@@ -12,7 +12,7 @@ class AppRoutes {
 
   static const String weather = '/weather';
   static const String events = '/events';
-  static const String eventDetail = 'detail'; // ← relativo, sin /
+  static const String eventDetail = '/events/detail';
   static const String favorites = '/favorites';
   static const String map = '/map';
 }
@@ -41,15 +41,6 @@ final appRouter = GoRouter(
             GoRoute(
               path: AppRoutes.events,
               builder: (context, state) => const EventsScreen(),
-              routes: [
-                GoRoute(
-                  path: AppRoutes.eventDetail,
-                  builder: (context, state) {
-                    final event = state.extra as EventEntity?;
-                    return EventDetailScreen(event: event);
-                  },
-                ),
-              ],
             ),
           ],
         ),
@@ -75,5 +66,13 @@ final appRouter = GoRouter(
         ),
       ],
     ),
+
+    GoRoute(
+      path: AppRoutes.eventDetail,
+      builder: (context, state) {
+        final event = state.extra as EventEntity?;
+        return EventDetailScreen(event: event);
+      },
+    )
   ],
 );

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:weather_app/core/errors/failure.dart';
+import 'package:weather_app/core/services/location_service.dart';
 import 'package:weather_app/core/theme/app_colors.dart';
 import 'package:weather_app/core/utils/weather_icon_mapper.dart';
 import 'package:weather_app/features/weather/domain/entities/day_forecast_entity.dart';
@@ -38,7 +41,14 @@ class _WeatherScreenState extends ConsumerState<WeatherScreen> {
 
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(gradient: AppColors.skyGradient),
+        decoration: BoxDecoration(
+          gradient: weatherState.maybeWhen(
+            data: (weather) => AppColors.dynamicGradient(
+              weather?.currentConditions?.icon ?? 'clear-day',
+            ),
+            orElse: () => AppColors.skyGradient,
+          ),
+        ),
         child: SafeArea(
           child: Column(
             children: [
@@ -50,7 +60,9 @@ class _WeatherScreenState extends ConsumerState<WeatherScreen> {
                 child: weatherState.when(
                   loading: () => const _LoadingView(),
                   error: (error, _) => _ErrorView(
-                    message: error.toString(),
+                    message: error is Failure
+                        ? error.message
+                        : 'Error inesperado. Intenta de nuevo',
                     onRetry: () => ref
                         .read(weatherNotifierProvider.notifier)
                         .loadWeather(_currentLocation),
@@ -108,7 +120,8 @@ class _LocationBar extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 4),
-            const Icon(Icons.keyboard_arrow_down, color: Colors.white, size: 18),
+            const Icon(Icons.keyboard_arrow_down,
+                color: Colors.white, size: 18),
           ],
         ),
       ),
@@ -205,7 +218,12 @@ class _WeatherContent extends StatelessWidget {
         : weather.days;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: EdgeInsets.only(
+        left: 16,
+        right: 16,
+        top: 0,
+        bottom: 80 + MediaQuery.of(context).padding.bottom,
+      ),
       child: Column(
         children: [
           // Temperatura actual grande
@@ -263,7 +281,7 @@ class _CurrentWeatherHero extends StatelessWidget {
         // Ícono grande
         Text(
           WeatherIconMapper.toEmoji(conditions.icon),
-          style: const TextStyle(fontSize: 80),
+          style: const TextStyle(fontSize: 96),
         ),
         const SizedBox(height: 8),
         // Temperatura principal
@@ -351,9 +369,21 @@ class _StatCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.15),
-        borderRadius: BorderRadius.circular(16),
-      ),
+          color: Colors.white.withOpacity(0.15),
+          borderRadius: BorderRadius.circular(16),
+          border: Border(
+            top: BorderSide(
+              color: Colors.white.withOpacity(0.25),
+              width: 0.5,
+            ),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            )
+          ]),
       child: Column(
         children: [
           Icon(icon, color: Colors.white70, size: 22),
@@ -389,6 +419,17 @@ class _DailyForecastCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.15),
         borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: Colors.white.withOpacity(0.1),
+          width: 0.5,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.25),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -418,8 +459,7 @@ class _DailyForecastCard extends StatelessWidget {
             itemCount: days.length,
             separatorBuilder: (_, __) =>
                 const Divider(color: Colors.white24, height: 1),
-            itemBuilder: (context, index) =>
-                _DayForecastRow(day: days[index]),
+            itemBuilder: (context, index) => _DayForecastRow(day: days[index]),
           ),
         ],
       ),
@@ -464,15 +504,18 @@ class _DayForecastRow extends StatelessWidget {
             ),
           ),
           // Ícono
-          Text(WeatherIconMapper.toEmoji(day.icon), style: const TextStyle(fontSize: 22)),
+          Text(WeatherIconMapper.toEmoji(day.icon),
+              style: const TextStyle(fontSize: 22)),
           const Spacer(),
           // Prob. precipitación
           if (day.precipProb > 0) ...[
-            const Icon(Icons.water_drop, color: Color.fromARGB(255, 50, 58, 64), size: 14),
+            const Icon(Icons.water_drop,
+                color: Color.fromARGB(255, 50, 58, 64), size: 14),
             const SizedBox(width: 2),
             Text(
               '${day.precipProb.round()}%',
-              style: const TextStyle(color: Color.fromARGB(255, 255, 255, 255), fontSize: 12),
+              style: const TextStyle(
+                  color: Color.fromARGB(255, 255, 255, 255), fontSize: 12),
             ),
             const SizedBox(width: 12),
           ],
@@ -509,6 +552,7 @@ class _LocationSearchSheet extends StatefulWidget {
 
 class _LocationSearchSheetState extends State<_LocationSearchSheet> {
   final _controller = TextEditingController();
+  bool _loadingGps = false;
 
   // Ciudades sugeridas rápidas
   static const _suggestions = [
@@ -531,6 +575,65 @@ class _LocationSearchSheetState extends State<_LocationSearchSheet> {
   void _select(String location) {
     Navigator.pop(context);
     widget.onLocationSelected(location);
+  }
+
+  Future<void> _useDeviceLocation() async {
+    setState(() => _loadingGps = true);
+
+    const service = LocationService(); //
+    final result = await service.getCurrentLocation();
+
+    if (!mounted) return;
+    setState(() => _loadingGps = false);
+
+    switch (result) {
+      case LocationSucces(:final coordinates):
+        _select(coordinates);
+      case LocationDenied(:final message):
+        _showMessage(message);
+      case LocationDeniedForever():
+        _showOpenSettingsDialog();
+      case LocationServiceDisabled():
+        _showMessage(
+          'El GPS está desactivado. Actívalo en Configuración del dispositivo.',
+        );
+    }
+  }
+
+  void _showMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.white70,
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
+  void _showOpenSettingsDialog() {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Permiso requerido'),
+        content: const Text(
+          'El permiso de ubicación fue denegado permanentemente. '
+          '¿Deseas ir a Configuración para habilitarlo?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Geolocator.openAppSettings();
+            },
+            child: const Text('Abrir Configuración'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -579,6 +682,38 @@ class _LocationSearchSheetState extends State<_LocationSearchSheet> {
               },
             ),
           ),
+
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            child: SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: _loadingGps ? null : _useDeviceLocation,
+                icon: _loadingGps
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white70,
+                        ),
+                      )
+                    : const Icon(Icons.my_location, color: Colors.white70),
+                label: Text(
+                  _loadingGps ? 'Obteniendo ubicación...' : 'Usar mi ubicación',
+                  style: const TextStyle(color: Colors.white70),
+                ),
+                style: OutlinedButton.styleFrom(
+                  side: const BorderSide(color: Colors.white24),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadiusGeometry.circular(12),
+                  ),
+                ),
+              ),
+            ),
+          ),
+
           // Sugerencias
           Expanded(
             child: ListView(

@@ -17,8 +17,10 @@ class FavoritesScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppColors.backgroundDark,
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: AppColors.primaryDark,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         title: const Text(
           'Favoritos',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
@@ -28,7 +30,8 @@ class FavoritesScreen extends ConsumerWidget {
           if (favorites.isNotEmpty)
             TextButton.icon(
               onPressed: () => _confirmClearAll(context, ref),
-              icon: const Icon(Icons.delete_outline, color: Colors.white70, size: 18),
+              icon: const Icon(Icons.delete_outline,
+                  color: Colors.white70, size: 18),
               label: const Text(
                 'Limpiar',
                 style: TextStyle(color: Colors.white70, fontSize: 13),
@@ -36,9 +39,22 @@ class FavoritesScreen extends ConsumerWidget {
             ),
         ],
       ),
-      body: favorites.isEmpty
-          ? const _EmptyFavoritesView()
-          : _FavoritesList(favorites: favorites),
+      body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color(0xFF1A1A3E),
+                Color(0xFF0D1B2A),
+              ],
+            ),
+          ),
+          child: favorites.isEmpty
+              ? const _EmptyFavoritesView()
+              : _FavoritesList(
+                  favorites: favorites,
+                )),
     );
   }
 
@@ -87,30 +103,35 @@ class _EmptyFavoritesView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            Icons.favorite_border,
-            size: 80,
-            color: Colors.white.withOpacity(0.15),
-          ),
-          const SizedBox(height: 20),
-          const Text(
-            'Sin favoritos aún',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
+    return Padding(
+      padding: EdgeInsets.only(
+        top: kToolbarHeight + MediaQuery.of(context).padding.top,
+      ),
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.favorite_border,
+              size: 80,
+              color: Colors.white.withOpacity(0.15),
             ),
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            'Guarda eventos desde la pestaña Eventos',
-            style: TextStyle(color: Colors.white38, fontSize: 14),
-          ),
-        ],
+            const SizedBox(height: 20),
+            const Text(
+              'Sin favoritos aún',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'Guarda eventos desde la pestaña Eventos',
+              style: TextStyle(color: Colors.white38, fontSize: 14),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -126,14 +147,19 @@ class _FavoritesList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ListView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.only(
+        left: 16,
+        right: 16,
+        top: kToolbarHeight + MediaQuery.of(context).padding.top + 8,
+        bottom: 80 + MediaQuery.of(context).padding.bottom,
+      ),
       itemCount: favorites.length,
       itemBuilder: (context, index) {
         final event = favorites[index];
         return _FavoriteCard(
           event: event,
           onTap: () => context.push(
-            '${AppRoutes.events}/${AppRoutes.eventDetail}',
+            AppRoutes.eventDetail,
             extra: event,
           ),
           onRemove: () => ref
@@ -160,13 +186,20 @@ class _FavoriteCard extends StatelessWidget {
 
   String _eventEmoji(String type) {
     switch (type.toLowerCase()) {
-      case 'hail':      return '🌨️';
-      case 'tornado':   return '🌪️';
-      case 'wind':      return '💨';
-      case 'earthquake':return '🌍';
-      case 'flood':     return '🌊';
-      case 'lightning': return '⚡';
-      default:          return '⚠️';
+      case 'hail':
+        return '🌨️';
+      case 'tornado':
+        return '🌪️';
+      case 'wind':
+        return '💨';
+      case 'earthquake':
+        return '🌍';
+      case 'flood':
+        return '🌊';
+      case 'lightning':
+        return '⚡';
+      default:
+        return '⚠️';
     }
   }
 
@@ -186,8 +219,18 @@ class _FavoriteCard extends StatelessWidget {
     try {
       final dt = DateTime.parse(datetime);
       const months = [
-        'ene', 'feb', 'mar', 'abr', 'may', 'jun',
-        'jul', 'ago', 'sep', 'oct', 'nov', 'dic',
+        'ene',
+        'feb',
+        'mar',
+        'abr',
+        'may',
+        'jun',
+        'jul',
+        'ago',
+        'sep',
+        'oct',
+        'nov',
+        'dic',
       ];
       return '${dt.day} ${months[dt.month - 1]} ${dt.year}';
     } catch (_) {
@@ -198,7 +241,6 @@ class _FavoriteCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dismissible(
-      // Swipe para eliminar — UX estándar en apps móviles
       key: Key(event.id),
       direction: DismissDirection.endToStart,
       onDismissed: (_) => onRemove(),
@@ -224,6 +266,7 @@ class _FavoriteCard extends StatelessWidget {
       ),
       child: Card(
         color: AppColors.cardDark,
+        elevation: 0,
         margin: const EdgeInsets.only(bottom: 12),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
